@@ -1,22 +1,22 @@
 import Ember from 'ember';
 import DS from 'ember-data';
-import getOwner from 'ember-getowner-polyfill';
-
+9
 const {
   get,
+  getOwner
 } = Ember;
 const keys = Object.keys || Ember.keys;
 const assign = Object.assign || Ember.assign;
 
 export default DS.RESTSerializer.extend({
-  
+
   init: function() {
   	this._super(...arguments);
-  	
+
     let config = getOwner(this).resolveRegistration('config:environment');
   	this.dontsavedefault = config['emberpouch'] && config['emberpouch']['dontsavehasmany'];
   },
-  
+
   _getDontsave(relationship) {
   	return !Ember.isEmpty(relationship.options.dontsave) ? relationship.options.dontsave : this.dontsavedefault;
   },
@@ -32,9 +32,9 @@ export default DS.RESTSerializer.extend({
   serializeHasMany(snapshot, json, relationship) {
   	if (this._shouldSerializeHasMany(snapshot, relationship.key, relationship)) {
 	    this._super.apply(this, arguments);
-	
+
 	    const key = relationship.key;
-	
+
 	    if (!json[key]) {
 	      json[key] = [];
 	    }
@@ -84,7 +84,7 @@ export default DS.RESTSerializer.extend({
     });
     return attributes;
   },
-  
+
   extractRelationships(modelClass) {
   	let relationships = this._super(...arguments);
 
@@ -93,7 +93,7 @@ export default DS.RESTSerializer.extend({
   	  	relationships[key] = { links: { related: key } };
   	  }
   	});
-  	
+
   	return relationships;
   }
 });
